@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Greesham Simon MSiA411 Homework 1</title>
+
+<script src="https://d3js.org/d3.v4.js"></script>
+<style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+
+</style>
+
+<div id="greeshamSimon_hw1"></div>
+
+<script>
+    // Dimensions of the horizontal barplot
+    var margins = {top: 20, right: 180, bottom: 40, left: 130},
+        width = 850 - margins.left - margins.right,
+        height = 1000 - margins.top - margins.bottom;
+
+    // Append svg object
+    var svg = d3.select("#greeshamSimon_hw1")
+      .append("svg")
+        .attr("width", width + margins.left + margins.right)
+        .attr("height", height + margins.top + margins.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margins.left + "," + margins.top + ")");
+
+    var x = d3.scaleLinear().range([0, width])
+
+    //function to add ticks based on the axis
+    function print_ticks() {
+        return d3.axisBottom(x)
+        .ticks(10)
+
+    }
+
+
+    // Load data presorted by name
+    d3.csv('https://raw.githubusercontent.com/greeshamsimon/msia411_hw1/master/homework1_name.csv', function(data) {
+
+    // Add vertical gridlines
+    svg.append("g")
+  		.attr("class","grid")
+      .attr("transform", "translate(0," + height + ")")
+  		.call(print_ticks()
+          .tickSize(-height)
+          .tickFormat("")
+
+      )
+
+    //x axis
+    var x = d3.scaleLinear()
+      .domain([0, 200])
+      .range([0, width]);
+
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("font-size", "10px")
+
+     //x axis title for graph 1
+     svg.append("text")
+      .attr("x", 230)
+      .attr("y", 975)
+      .style("font-weight", "bold")
+      .text("Height (cm)")
+
+     //title for graph 1
+     svg.append("text")
+      .attr("x", 75)
+      .attr("y", -5)
+      .style("font-size", "20px")
+      .style("text-anchor", "middle")
+      .style("font-weight", "bold")
+      .text("MSiA Student Heights (Sorted By Name)")
+
+    //y axis
+    var y = d3.scaleBand()
+      .range([0, height])
+      .padding(.25)
+      .domain(data.map(function(d) { return d.Name; }))
+
+    svg.append("g")
+      .call(d3.axisLeft(y))
+      .attr("font-size", "11px")
+
+    //bar objects for each name in the csv
+    svg.selectAll("myRect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", x(0) )
+      .attr("y", function(d) { return y(d.Name); })
+      .attr("width", function(d) { return x(d.Height); })
+      .attr("height", y.bandwidth() )
+      .attr("fill", function(d){
+          if (d.EyeColor=='Blue'){
+              return "#076eb6";
+          }
+          else if (d.EyeColor=='Black'){
+              return "#182132";
+          }
+          else if (d.EyeColor=='Brown'){
+            return "#7e4110";
+          }
+      })
+
+      //Adding the legend
+      svg.append("text")
+        .attr("x", 550)
+        .attr("y", 10)
+        .text("Color Legend")
+        .style("font-size", "18px")
+        .style("font-weight", "bold")
+
+      //Black Color Legend
+      svg.append("circle")
+        .attr("cx",557)
+        .attr("cy",30)
+        .attr("r", 6)
+        .style("fill", "#182132")
+      svg.append("text")
+        .attr("x", 570)
+        .attr("y", 31)
+        .text("Black Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+
+      //Blue Color Legend
+      svg.append("circle")
+        .attr("cx",557)
+        .attr("cy",55)
+        .attr("r", 6)
+        .style("fill", "#076eb6")
+      svg.append("text")
+        .attr("x", 570)
+        .attr("y", 56)
+        .text("Blue Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+
+      //Brown Color Legend
+      svg.append("circle")
+        .attr("cx",557)
+        .attr("cy",80)
+        .attr("r", 6)
+        .style("fill", "#7e4110")
+      svg.append("text")
+        .attr("x", 570)
+        .attr("y", 81)
+        .text("Brown Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+    })
+
+//################################################################
+
+    // Graph Sort by Height
+    var svg2 = d3.select("#greeshamSimon_hw1 ")
+      .append("svg")
+        .attr("width", width + margins.left + margins.right)
+        .attr("height", height + margins.top + margins.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margins.left + "," + margins.top + ")");
+
+    var x2 = d3.scaleLinear().range([0, width])
+
+
+    d3.csv("https://raw.githubusercontent.com/greeshamsimon/msia411_hw1/master/homework1_height.csv", function(data){
+    svg2.append("g")
+  		.attr("class","grid")
+      .attr("transform", "translate(0," + height + ")")
+  		.call(print_ticks()
+            .tickSize(-height)
+            .tickFormat("")
+      )
+
+    //x axis for graph 2
+    var x2 = d3.scaleLinear()
+      .domain([0, 200])
+      .range([0, width]);
+    svg2.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x2))
+      .attr("font-size", "11px")
+
+    // x axis label for graph 2
+    svg2.append("text")
+      .attr("x", 230)
+      .attr("y", 975)
+      .style("font-weight", "bold")
+      .text("Height (cm)")
+
+    //title for graph 2
+    svg2.append("text")
+    .attr("x", 75)
+    .attr("y", -5)
+    .style("font-size", "20px")
+    .style("text-anchor", "middle")
+    .style("font-weight", "bold")
+    .text("MSiA Student Heights (Sorted By Height)")
+
+    //y axis
+    var y2 = d3.scaleBand()
+      .range([0, height])
+      .padding(.25)
+      .domain(data.map(function(d) { return d.Name; }))
+
+    svg2.append("g")
+      .call(d3.axisLeft(y2))
+      .attr("font-size", "11px")
+
+    //bar charts
+    svg2.selectAll("myRect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", x2(0) )
+      .attr("y", function(d) { return y2(d.Name); })
+      .attr("width", function(d) { return x2(d.Height); })
+      .attr("height", y2.bandwidth() )
+      .attr("fill", function(d){
+        if (d.EyeColor=='Blue'){
+            return "#076eb6";
+        }
+        else if (d.EyeColor=='Black'){
+            return "#182132";
+        }
+        else if (d.EyeColor=='Brown'){
+          return "#7e4110";
+        }
+      })
+
+
+      //Adding the legend
+      svg2.append("text")
+        .attr("x", 550)
+        .attr("y", 10)
+        .text("Color Legend")
+        .style("font-size", "18px")
+        .style("font-weight", "bold")
+
+      //Black Color Legend
+      svg2.append("circle")
+        .attr("cx",557)
+        .attr("cy",30)
+        .attr("r", 6)
+        .style("fill", "#182132")
+      svg2.append("text")
+        .attr("x", 570)
+        .attr("y", 31)
+        .text("Black Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+
+      //Blue Color Legend
+      svg2.append("circle")
+        .attr("cx",557)
+        .attr("cy",55)
+        .attr("r", 6)
+        .style("fill", "#076eb6")
+      svg2.append("text")
+        .attr("x", 570)
+        .attr("y", 56)
+        .text("Blue Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+
+      //Brown Color Legend
+      svg2.append("circle")
+        .attr("cx",557)
+        .attr("cy",80)
+        .attr("r", 6)
+        .style("fill", "#7e4110")
+      svg2.append("text")
+        .attr("x", 570)
+        .attr("y", 81)
+        .text("Brown Eyes")
+        .style("font-size", "15px")
+        .attr("alignment-baseline","middle")
+
+
+
+   })
+    </script>
